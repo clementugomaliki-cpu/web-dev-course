@@ -14,9 +14,9 @@ const addToCart = async (req, res) => {
             return res.status(400).json({success: false, message: "Insufficient stock"});
         }
 
-        let cart = await Cart.findOne({ Seller: req.user._id });
+        let cart = await Cart.findOne({ Buyer: req.user._id });
         if (!cart) {
-            cart = new Cart({ Seller: req.user._id, items: [] });
+            cart = new Cart({ Buyer: req.user._id, items: [] });
         }
 
         const existingItem = cart.items.find(item => item.product.toString() === productId);
@@ -37,11 +37,11 @@ const addToCart = async (req, res) => {
 
 const getCart = async (req, res) => {
     try {
-        const cart = await Cart.findOne({ Seller: req.user._id })
+        const cart = await Cart.findOne({ Buyer: req.user._id })
             .populate("items.product", "name price image stock");
 
         if (!cart) {
-            return res.status(200).json({success: true, cart: { Seller: req.user._id, items: [] }});
+            return res.status(200).json({success: true, cart: { Buyer: req.user._id, items: [] }});
         }
         res.status(200).json({success: true, cart});
 
@@ -53,7 +53,7 @@ const getCart = async (req, res) => {
 const updateCartItem = async (req, res) => {
     try {
         const { quantity } = req.body;
-        const cart = await Cart.findOne({ Seller: req.user._id });
+        const cart = await Cart.findOne({ Buyer: req.user._id });
         if (!cart) {
             return res.status(404).json({success: false, message: "Cart not found"});
         }
@@ -72,7 +72,7 @@ const updateCartItem = async (req, res) => {
 
 const removeCartItem = async (req, res) => {
     try {
-        const cart = await Cart.findOne({ Seller: req.user._id });
+        const cart = await Cart.findOne({ Buyer: req.user._id });
         if (!cart) {
             return res.status(404).json({success: false, message: "Cart not found"});
         }

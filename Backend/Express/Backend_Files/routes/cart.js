@@ -5,7 +5,7 @@ const {addToCart, getCart, updateCartItem, removeCartItem} = require("../control
 
 router.get("/", auth, getCart);
 
-router.post("/", (req, res)=>{console.log(req.body)}, auth, addToCart);
+router.post("/", auth, addToCart);
 
 router.put("/:productId", auth, updateCartItem);
 

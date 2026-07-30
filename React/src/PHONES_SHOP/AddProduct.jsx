@@ -17,7 +17,7 @@ export default function AddProduct() {
         setErrorMessage("");
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:4000/products/", {
+            const response = await fetch("https://web-dev-course-1nr1.onrender.com/products/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

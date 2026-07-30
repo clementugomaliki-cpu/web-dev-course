@@ -18,7 +18,7 @@ export default function Products() {
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const response = await fetch("http://localhost:4000/products/");
+                const response = await fetch("https://web-dev-course-1nr1.onrender.com/products/");
                 const data = await response.json();
                 if (!response.ok) {
                     setErrorMessage(data.message || "Failed to load products.");
@@ -37,7 +37,7 @@ export default function Products() {
     async function deleteProduct(productId) {
     try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:4000/products/${productId}`, {
+        const response = await fetch(`https://web-dev-course-1nr1.onrender.com/products/${productId}`, {
             method: "DELETE",
             headers: { authorization: `Bearer ${token}` }
         });

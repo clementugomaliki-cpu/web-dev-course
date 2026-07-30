@@ -9,7 +9,7 @@ export default function UserAccounts() {
     const setInput = (e) => setUserDetails(prev => ({...prev, [e.target.name]: e.target.value}));
     async function signIn() {
         try {
-        const response = await fetch("http://localhost:4000/users/profile", {
+        const response = await fetch("https://web-dev-course-1nr1.onrender.com/users/profile", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(userDetails)

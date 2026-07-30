@@ -15,7 +15,7 @@ export default function EditProduct() {
     useEffect(() => {
         async function fetchProduct() {
             try {
-                const response = await fetch(`http://localhost:4000/products/${id}`);
+                const response = await fetch(`https://web-dev-course-1nr1.onrender.com/products/${id}`);
                 const data = await response.json();
                 if (!response.ok) {
                     setErrorMessage(data.message || "Failed to load product.");
@@ -40,7 +40,7 @@ export default function EditProduct() {
         setErrorMessage("");
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch(`http://localhost:4000/products/${id}`, {
+            const response = await fetch(`https://web-dev-course-1nr1.onrender.com/products/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

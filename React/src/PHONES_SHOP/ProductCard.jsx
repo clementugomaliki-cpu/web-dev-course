@@ -13,7 +13,7 @@ export default function ProductCard({ productId, name, description, category, im
         setMessage("");
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:4000/cart/", {
+            const response = await fetch("https://web-dev-course-1nr1.onrender.com/cart/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

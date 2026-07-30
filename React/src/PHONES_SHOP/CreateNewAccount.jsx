@@ -15,7 +15,7 @@ export default function CreateNewAccount() {
         }
         try {
             const {confirmPassword, ...payload} = formInput;
-            const response = await fetch("http://localhost:4000/users/register", {
+            const response = await fetch("https://web-dev-course-1nr1.onrender.com/users/register", {
             method: "POST",
             headers: {"Content-Type": "application/json" },
             body: JSON.stringify(payload)

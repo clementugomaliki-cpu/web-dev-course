@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const auth = require("../middleware/auth");
-const authorize = require("../middleware/authorize");
+const auth = require("../Middleware/auth");
+const authorize = require("../Middleware/authorize");
 const {createProduct, getProducts, getProductById, updateProduct, deleteProduct} 
     = require("../controllers/products");
 

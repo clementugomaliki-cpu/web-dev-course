@@ -1,7 +1,8 @@
 const Creator = require("../models/creators");
 const {sendVerificationEmail} = require("./creatormail");
 const bcrypt = require("bcrypt");
-
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 async function createUser(req, res) {
     try {
@@ -21,7 +22,6 @@ res.status(201).json({message: "Enter the verification code sent to your email t
         console.log(error)
         res.status(500).json({message: "Something went wrong while creating your account. Try again."})
     }
-
 }
 
 async function verifyEmail (req, res) {
@@ -32,7 +32,7 @@ async function verifyEmail (req, res) {
         return res.status(400).json({message: "No account found with this email."})
     }
     if (otp !== registeredCreator.otp) {
-        return res.status(400).json({message: "OTP mismatch. Enter the latest verification code sent to your email."});
+        return res.status(400).json({message: "The code you entered is incorrect. Please try again."});
     }
     if (registeredCreator.otpExpiry < Date.now()) {
         return res.status(400).json ({message: "This verification code is no longer valid."});
@@ -48,4 +48,28 @@ async function verifyEmail (req, res) {
 }
 }
 
-module.exports = {createUser, verifyEmail}
+async function creatorLogin (req, res) {
+    try {
+        const {email, password} = req.body;
+        const registeredCreator = await Creator.findOne({email});
+        if (!registeredCreator) {
+            return res.status(400).json({message: "Wrong email or password"})
+        }
+        const passwordsMatch = await bcrypt.compare(password, registeredCreator.password);
+        if (!passwordsMatch) {
+            return res.status(400).json({message: "Wrong email or password"})
+        };
+        if (!registeredCreator.isVerified) {
+            return res.status(403).json({message: "You need to verify your email before you can sign in."})
+        }
+
+        const userToken = await jwt.sign({id: registeredCreator._id, email: registeredCreator.email}, process.env.JWT_SECRET, {expiresIn: 60*60*2} );
+        res.status(200).json({message: "Log in successful", userToken})
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({message: "Failed to sign in. Check your details and try again."})
+    }
+}
+
+module.exports = {createUser, verifyEmail, creatorLogin}

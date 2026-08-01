@@ -12,7 +12,9 @@ async function sendVerificationEmail(email){
    registeredCreator.otpExpiry = Date.now() + 60*15*1000;
    await registeredCreator.save();
  
+   //console.log("SMTP config:", process.env.SMTP_HOST, process.env.SMTP_PORT, process.env.EMAIL);
    const transporter = await nodemailer.createTransport({
+      service: "gmail",
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
       auth: {

@@ -20,5 +20,7 @@ const creatorsSchema = new mongoose.Schema({
     },
     otp: String,
     otpExpiry: Date,
-    timestamps: {type: Boolean, default: true}
-})
+},
+{timestamps: true}
+)
+module.exports = mongoose.model("Creator", creatorsSchema)

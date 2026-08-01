@@ -11,7 +11,10 @@ mongoose.connect(process.env.MBL_NO_SRV)
     .catch((e)=>console.log(e))
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["https://merchby-lucius.vercel.app", "http://localhost:5173"],
+    credentials: true
+}));
 app.use("/accounts", creatorRoute);
 
 app.listen(port, ()=>console.log(`server running on port ${port}`))

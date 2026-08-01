@@ -1,3 +1,4 @@
+const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
 
 const creatorsSchema = new mongoose.Schema({
@@ -12,5 +13,12 @@ const creatorsSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    otp: String,
+    otpExpiry: Date,
+    timestamps: {type: Boolean, default: true}
 })

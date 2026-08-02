@@ -5,23 +5,34 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 async function createUser(req, res) {
-    try {
         const {name, email, password} = req.body;
 const hashedPassword = await bcrypt.hash(password, 10)
 const existingUser = await Creator.findOne({email});
 if (existingUser) {
-   return res.status(400).json({message: "A user with this email already exists."})
-}
-const newUser = new Creator({
-    name, email, password: hashedPassword
-})
-await newUser.save();
-await sendVerificationEmail(email);
-res.status(201).json({message: "Enter the verification code sent to your email to complete your account creation."})
-    } catch(error) {
-        console.log(error)
-        res.status(500).json({message: "Something went wrong while creating your account. Try again."})
+    if (existingUser.isVerified) {
+        return res.status(400).json({message: "A user with this email already exists."})
     }
+    existingUser.name = name;
+    existingUser.password = hashedPassword;
+    await existingUser.save();
+
+    try {
+        await sendVerificationEmail(email);
+    } catch (emailError) {
+        console.log("Email failed to send:", emailError);
+    }
+
+    return res.status(201).json({message: "Enter the verification code sent to your email to complete your account creation."})
+}
+
+const newUser = new Creator({ name, email, password: hashedPassword });
+await newUser.save();
+try {
+    await sendVerificationEmail(email);
+} catch (emailError) {
+    console.log("Email failed to send, but account was created:", emailError);
+}
+res.status(201).json({message: "Enter the verification code sent to your email to complete your account creation."})
 }
 
 async function verifyEmail (req, res) {

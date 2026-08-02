@@ -15,8 +15,8 @@ async function sendVerificationEmail(email){
    //console.log("SMTP config:", process.env.SMTP_HOST, process.env.SMTP_PORT, process.env.EMAIL);
    const transporter = await nodemailer.createTransport({
       service: "gmail",
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      // host: process.env.SMTP_HOST,
+      // port: process.env.SMTP_PORT,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSW

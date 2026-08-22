@@ -1,31 +1,21 @@
-const Creator = require("../models/creators");
+const Purchaser = require("../models/purchasers");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 async function sendVerificationEmail(email){
-   const registeredCreator = await Creator.findOne({email});
-   if (!registeredCreator) {
+   const registeredPurchaser = await Purchaser.findOne({email});
+   if (!registeredPurchaser) {
       throw new Error('No user found')
    }
-
-   if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.EMAIL || !process.env.PASSW) {
-      throw new Error('SMTP configuration is incomplete')
-   }
-
-   const smtpPort = Number(process.env.SMTP_PORT);
-   if (!Number.isInteger(smtpPort) || smtpPort <= 0) {
-      throw new Error('SMTP_PORT must be a valid port number')
-   }
-
    const otp = (Math.floor(100000 + Math.random()*900000)).toString();
-   registeredCreator.otp = otp;
-   registeredCreator.otpExpiry = Date.now() + 60*15*1000;
-   await registeredCreator.save();
-
-   const transporter = nodemailer.createTransport({
+   registeredPurchaser.otp = otp;
+   registeredPurchaser.otpExpiry = Date.now() + 60*15*1000;
+   await registeredPurchaser.save();
+ 
+   //console.log("SMTP config:", process.env.SMTP_HOST, process.env.SMTP_PORT, process.env.EMAIL);
+   const transporter = await nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: smtpPort,
-      secure: smtpPort === 465,
+      port: process.env.SMTP_PORT,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSW
@@ -40,7 +30,6 @@ async function sendVerificationEmail(email){
    try {
       const info = await transporter.sendMail(newMail);
       console.log("Email sent: " + info.response)
-      return info
    } catch(error) {
       console.log("Error sending email: ", error);
       throw error

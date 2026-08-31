@@ -7,15 +7,22 @@ async function sendVerificationEmail(email){
    if (!registeredPurchaser) {
       throw new Error('No user found')
    }
+
+   if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.EMAIL || !process.env.PASSW) {
+      throw new Error('SMTP configuration is incomplete')
+   }
+
+   const smtpPort = Number(process.env.SMTP_PORT);
+   if (!Number.isInteger(smtpPort) || smtpPort <= 0) {
+      throw new Error('SMTP_PORT must be a valid port number')
+   }
+
    const otp = (Math.floor(100000 + Math.random()*900000)).toString();
-   registeredPurchaser.otp = otp;
-   registeredPurchaser.otpExpiry = Date.now() + 60*15*1000;
-   await registeredPurchaser.save();
- 
-   //console.log("SMTP config:", process.env.SMTP_HOST, process.env.SMTP_PORT, process.env.EMAIL);
-   const transporter = await nodemailer.createTransport({
+
+   const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      port: smtpPort,
+      secure: smtpPort === 465,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSW
@@ -30,10 +37,15 @@ async function sendVerificationEmail(email){
    try {
       const info = await transporter.sendMail(newMail);
       console.log("Email sent: " + info.response)
+
+      registeredPurchaser.otp = otp;
+      registeredPurchaser.otpExpiry = Date.now() + 60*15*1000;
+      await registeredPurchaser.save();
+
+      return info
    } catch(error) {
       console.log("Error sending email: ", error);
       throw error
    }
 }
-
 module.exports = {sendVerificationEmail}

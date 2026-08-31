@@ -22,7 +22,7 @@ if (existingUser) {
         console.log("Email failed to send:", emailError);
     }
 
-    return res.status(201).json({message: "Enter the verification code sent to your email to complete your account creation."})
+    return res.status(201).json({message: "Enter the verification code sent to your email to complete your account registration."})
 }
 
 const newUser = new Purchaser({ name, email, password: hashedPassword });
@@ -32,7 +32,7 @@ try {
 } catch (emailError) {
     console.log("Email failed to send, but account was created:", emailError);
 }
-res.status(201).json({message: "Enter the verification code sent to your email to complete your account creation."})
+res.status(201).json({message: "Enter the verification code sent to your email to complete your account registration."})
 }
 
 async function verifyEmail (req, res) {
@@ -46,7 +46,7 @@ async function verifyEmail (req, res) {
         return res.status(400).json({message: "The code you entered is incorrect. Please try again."});
     }
     if (registeredPurchaser.otpExpiry < Date.now()) {
-        return res.status(400).json ({message: "This verification code is no longer valid."});
+        return res.status(403).json ({message: "This verification code is no longer valid."});
     }
     registeredPurchaser.isVerified = true;
     registeredPurchaser.otp = undefined;

@@ -3,6 +3,8 @@ const app = express();
 require("dotenv").config();
 const port = process.env.PORT || 6000;
 const creatorRoute = require("./routes/creator");
+const purchaserRoute = require("./routes/purchasers");
+const {loginUser} = require("./controllers/creatorcontroller");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
@@ -16,5 +18,7 @@ app.use(cors({
     credentials: true
 }));
 app.use("/accounts", creatorRoute);
+app.use("/accounts", purchaserRoute);
+app.post("/accounts/login", loginUser);
 
 app.listen(port, ()=>console.log(`server running on port ${port}`))

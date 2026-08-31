@@ -1,3 +1,7 @@
+const Creator = require("../models/creators");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
+
 async function sendVerificationEmail(email){
    const registeredCreator = await Creator.findOne({email});
    if (!registeredCreator) {
@@ -34,7 +38,6 @@ async function sendVerificationEmail(email){
       const info = await transporter.sendMail(newMail);
       console.log("Email sent: " + info.response)
 
-      // Only persist the OTP once we know it actually went out
       registeredCreator.otp = otp;
       registeredCreator.otpExpiry = Date.now() + 60*15*1000;
       await registeredCreator.save();
@@ -45,3 +48,4 @@ async function sendVerificationEmail(email){
       throw error
    }
 }
+module.exports = {sendVerificationEmail}

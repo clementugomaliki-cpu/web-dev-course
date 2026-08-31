@@ -1,4 +1,5 @@
 const Creator = require("../models/creators");
+const Purchaser = require("../models/purchasers");
 const {sendVerificationEmail} = require("./creatormail");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -59,28 +60,44 @@ async function verifyEmail (req, res) {
 }
 }
 
-async function creatorLogin (req, res) {
+async function loginUser(req, res) {
     try {
         const {email, password} = req.body;
+
         const registeredCreator = await Creator.findOne({email});
-        if (!registeredCreator) {
-            return res.status(400).json({message: "Wrong email or password"})
+        const registeredPurchaser = await Purchaser.findOne({email});
+
+        const user = registeredCreator || registeredPurchaser;
+
+        if (!user) {
+            return res.status(400).json({message: "Wrong email or password"});
         }
-        const passwordsMatch = await bcrypt.compare(password, registeredCreator.password);
+
+        const passwordsMatch = await bcrypt.compare(password, user.password);
         if (!passwordsMatch) {
-            return res.status(400).json({message: "Wrong email or password"})
-        };
-        if (!registeredCreator.isVerified) {
-            return res.status(403).json({message: "You need to verify your email before you can sign in."})
+            return res.status(400).json({message: "Wrong email or password"});
         }
 
-        const userToken = await jwt.sign({id: registeredCreator._id, email: registeredCreator.email}, process.env.JWT_SECRET, {expiresIn: 60*60*2} );
-        res.status(200).json({message: "Log in successful", userToken})
+        if (!user.isVerified) {
+            return res.status(403).json({message: "You need to verify your email before you can sign in."});
+        }
 
+        const role = registeredCreator ? "creator" : "purchaser";
+        const userToken = jwt.sign(
+            { id: user._id, email: user.email, role },
+            process.env.JWT_SECRET,
+            { expiresIn: 60 * 60 * 2 }
+        );
+
+        return res.status(200).json({
+            message: "Log in successful",
+            userToken,
+            role
+        });
     } catch (err) {
         console.log(err);
-        res.status(500).json({message: "Failed to sign in. Check your details and try again."})
+        return res.status(500).json({message: "Failed to sign in. Check your details and try again."});
     }
 }
 
-module.exports = {createUser, verifyEmail, creatorLogin}
+module.exports = {createUser, verifyEmail, loginUser}

@@ -20,9 +20,10 @@ async function sendVerificationEmail(email){
    const otp = (Math.floor(100000 + Math.random()*900000)).toString();
 
    const transporter = nodemailer.createTransport({
+      service: 'gmail',
       host: process.env.SMTP_HOST,
       port: smtpPort,
-      secure: smtpPort === 465,
+      secure: false,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSW

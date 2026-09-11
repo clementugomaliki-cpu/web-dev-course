@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const {purchaserSignup, verifyEmail} = require("../controllers/purchaserController");
+const {purchaserSignup, verifyEmail, purchaserLogin} = require("../controllers/purchaserController");
 
 
 router.post("/purchaser-register", purchaserSignup);
 router.post("/verify-otp", verifyEmail);
+router.post("/login", purchaserLogin);
 
 module.exports = router

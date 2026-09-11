@@ -14,7 +14,12 @@ mongoose.connect(process.env.MBL_NO_SRV)
 
 app.use(express.json());
 app.use(cors({
-    origin: ["https://merchby-lucius.vercel.app", "http://localhost:5173"],
+    origin: [
+        "https://merchby-lucius.vercel.app",
+        "https://merchbylucius.com.ng",
+        "https://www.merchbylucius.com.ng",
+        "http://localhost:5173"
+    ],
     credentials: true
 }));
 app.use("/accounts", creatorRoute);

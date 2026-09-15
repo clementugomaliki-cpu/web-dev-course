@@ -14,7 +14,7 @@ async function sendVerificationEmail(email) {
    try {
       if (process.env.RESEND_API_KEY) {
          const resend = new Resend(process.env.RESEND_API_KEY);
-         const fromAddress = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+         const fromAddress = process.env.RESEND_FROM_EMAIL
 
          const emailResponse = await resend.emails.send({
             from: `Merch by Lucius <${fromAddress}>`,

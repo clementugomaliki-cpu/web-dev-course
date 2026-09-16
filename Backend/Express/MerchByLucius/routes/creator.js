@@ -4,6 +4,6 @@ const {createUser, verifyEmail} = require("../controllers/creatorcontroller");
 
 
 router.post("/creator-register", createUser);
-router.post("/verify-otp", verifyEmail);
+router.post("/creator-verify-otp", verifyEmail);
 
 module.exports = router

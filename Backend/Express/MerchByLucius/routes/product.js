@@ -6,7 +6,7 @@ const {requireRole} = require("../middleware/auth");
 const uploadImage = require("../middleware/upload");
 
 router.get("/", listApprovedProducts);
-router.post("/add-product", auth, requireRole("creator"), uploadImage.single("image"), createProduct);
+router.post("/add-product", auth, requireRole("creator"), uploadImage, createProduct);
 router.get("/pending", auth, requireRole("moderator"), listPendingProducts);
 router.patch("/:id/approve", auth, requireRole("moderator"), approveProduct);
 router.patch("/:id/reject", auth, requireRole("moderator"), rejectProduct);

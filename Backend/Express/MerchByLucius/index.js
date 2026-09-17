@@ -7,6 +7,7 @@ const purchaserRoute = require("./routes/purchasers");
 const {loginUser} = require("./controllers/creatorcontroller");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const productRoute = require("./routes/product");
 
 mongoose.connect(process.env.MBL_NO_SRV)
     .then(()=>console.log("Server is connected to db"))
@@ -24,6 +25,7 @@ app.use(cors({
 }));
 app.use("/accounts", creatorRoute);
 app.use("/accounts", purchaserRoute);
+app.use("/products", productRoute);
 app.post("/accounts/login", loginUser);
 
 app.listen(port, ()=>console.log(`server running on port ${port}`))

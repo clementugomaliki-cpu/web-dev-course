@@ -18,6 +18,11 @@ const creatorsSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    role: {
+        type: String,
+        enum: ["creator", "moderator"],
+        default: "creator"
+    },
     otp: String,
     otpExpiry: Date,
 },

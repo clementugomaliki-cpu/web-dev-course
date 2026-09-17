@@ -82,7 +82,7 @@ async function loginUser(req, res) {
             return res.status(403).json({message: "You need to verify your email before you can sign in."});
         }
 
-        const role = registeredCreator ? "creator" : "purchaser";
+        const role = registeredCreator ? (registeredCreator.role || "creator") : "purchaser";
         const userToken = jwt.sign(
             { id: user._id, email: user.email, role },
             process.env.JWT_SECRET,

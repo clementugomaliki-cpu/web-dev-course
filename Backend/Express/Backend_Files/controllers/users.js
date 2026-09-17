@@ -7,8 +7,8 @@ const newProfile = async (req, res) =>{
     try {
         const existingUser = await User.findOne({email: req.body.email})
         if (existingUser) {
-            res.status(409).json("A user with this email already exists!")
-            return
+           return res.status(409).json("A user with this email already exists!")
+        
         }
     const {name, email, password, role, address, phone} = req.body;
     const hashedPassword = await bcrypt.hash(password, 10)
